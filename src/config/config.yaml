@@ -11,4 +11,4 @@ LOG:
   LEVEL: debug
 
 HTTP:
-  HTTP_PORT: 8080
+  HTTP_PORT: :8080
