@@ -1,0 +1,14 @@
+#POSTGRESQL
+PSQL_CONF:
+  HOST: localhost
+  PORT: 5432
+  USER: postgres
+  PASSWORD: postgres
+  DB_NAME: user-segmentation
+  SSLMODE: disable
+
+LOG:
+  LEVEL: debug
+
+HTTP:
+  HTTP_PORT: 8080
