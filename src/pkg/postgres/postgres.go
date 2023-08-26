@@ -4,10 +4,15 @@ import (
 	"Avito-test-task/config"
 	"database/sql"
 	"fmt"
-	log "github.com/sirupsen/logrus"
+	"io/ioutil"
 )
 
-func NewPostgresDB(cfg *config.Config) (*sql.DB, error) {
+type Repo struct {
+	Db *sql.DB
+}
+
+func NewPostgresDB(cfg *config.Config) (*Repo, error) {
+	R := &Repo{}
 	cfgDb := cfg.PostgresDB
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
 		cfgDb.Host, cfgDb.Port, cfgDb.User, cfgDb.Password, cfgDb.Dbname, cfgDb.SSLMode)
@@ -16,10 +21,15 @@ func NewPostgresDB(cfg *config.Config) (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = db.Ping()
+	R.Db = db
+
+	query, err := ioutil.ReadFile("./schema/up.sql")
 	if err != nil {
 		return nil, err
 	}
-	log.Println("ping DB successfully")
-	return db, nil
+	if _, err = db.Exec(string(query)); err != nil {
+		return nil, err
+	}
+
+	return R, nil
 }

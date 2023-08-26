@@ -3,8 +3,8 @@ package app
 import (
 	"Avito-test-task/config"
 	"Avito-test-task/internal/logger"
-	rt "Avito-test-task/internal/router"
 	repo "Avito-test-task/pkg/postgres"
+	rt "Avito-test-task/pkg/router"
 	"context"
 	"fmt"
 	_ "github.com/lib/pq"
@@ -24,18 +24,18 @@ func Run(configPath string) {
 
 	// Logger
 	logger.SetLogrus(cfg.Logger.Level)
-
+	log.Info("config:", cfg)
 	// Repositories
 	log.Info("Initializing postgres...")
-	pg, err := repo.NewPostgresDB(cfg)
+	db, err := repo.NewPostgresDB(cfg)
 	if err != nil {
 		log.Fatal(fmt.Errorf("app - Run - pgdb.NewServices: %w", err))
 	}
-	defer pg.Close()
+	defer db.Db.Close()
 
 	// Init routers
 	log.Info("Initializing handlers and router...")
-	router := rt.NewRouter()
+	router := rt.NewRouter(db)
 	router.InitRoutes()
 
 	// HTTP server

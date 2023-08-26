@@ -1,16 +1,19 @@
 package router
 
 import (
+	"Avito-test-task/pkg/postgres"
 	"github.com/gin-gonic/gin"
 )
 
 type Router struct {
 	Rtr *gin.Engine
+	Db  *postgres.Repo
 }
 
-func NewRouter() *Router {
+func NewRouter(db *postgres.Repo) *Router {
 	return &Router{
 		Rtr: gin.Default(),
+		Db:  db,
 	}
 }
 
@@ -25,20 +28,4 @@ func (r *Router) InitRoutes() {
 
 	// Метод получения активных сегментов пользователя
 	r.Rtr.GET("/user/:id/segments", r.GetUserSegmentsHandler)
-}
-
-func (r *Router) CreateSegmentHandler(c *gin.Context) {
-
-}
-
-func (r *Router) DeleteSegmentHandler(c *gin.Context) {
-
-}
-
-func (r *Router) AddUserSegmentsHandler(c *gin.Context) {
-
-}
-
-func (r *Router) GetUserSegmentsHandler(c *gin.Context) {
-
 }

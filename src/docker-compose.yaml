@@ -1,0 +1,29 @@
+version: "3.9"
+services:
+  user-segmentation:
+    container_name: user-segmentation
+    build: ./
+    command: ["./wait-for-it.sh", "postgres:5432", "--", "./user-segmentation"]
+    depends_on:
+      - postgres
+    ports:
+      - '8000:8000'
+    networks:
+      - MYAPP
+
+  postgres:
+    container_name: db
+    image: postgres:15.3
+    environment:
+      POSTGRES_DB: user-segmentation
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5432:5432'
+    networks:
+      - MYAPP
+
+networks:
+      MYAPP:
+        name: my-shared-db-network
+        driver: bridge
