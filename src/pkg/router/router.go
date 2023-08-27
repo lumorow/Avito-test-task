@@ -24,8 +24,8 @@ func (r *Router) InitRoutes() {
 	r.Rtr.DELETE("/segment/:slug", r.DeleteSegmentHandler)
 
 	// Метод добавления пользователя в сегмент
-	r.Rtr.PUT("/user/:id/segments", r.AddUserSegmentsHandler)
+	r.Rtr.PUT("/user/:uid/segments", r.AddUserSegmentsHandler)
 
 	// Метод получения активных сегментов пользователя
-	r.Rtr.GET("/user/:id/segments", r.GetUserSegmentsHandler)
+	r.Rtr.GET("/user/:uid/segments", r.GetUserSegmentsHandler)
 }
