@@ -11,11 +11,11 @@ func (db *Repo) CreateSegment(segmentName string) (int, error) {
 	var segmentID int
 
 	row, err := db.Db.Query(createSegment, segmentName)
+	defer row.Close()
+
 	if err != nil {
 		return 0, err
 	}
-
-	defer row.Close()
 
 	if row.Next() {
 		err = row.Scan(&segmentID)
@@ -34,10 +34,11 @@ func (db *Repo) DeleteSegment(segmentName string) (int, error) {
 	var segmentID int
 
 	row, err := db.Db.Query(deleteSegment, segmentName)
+	defer row.Close()
+
 	if err != nil {
 		return 0, err
 	}
-	defer row.Close()
 
 	if row.Next() {
 		err = row.Scan(&segmentID)
@@ -57,7 +58,7 @@ func (db *Repo) GetIdSegment(segmentName string) (int, error) {
 	var segmentID int
 	err := db.Db.QueryRow(segmentQuery, segmentName).Scan(&segmentID)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			return 0, fmt.Errorf("segment not found")
 		}
 		return 0, err

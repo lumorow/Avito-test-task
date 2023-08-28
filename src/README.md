@@ -1,1 +1,14 @@
-docker run --name db -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=user-segmentation -d postgres:15.3
+### Метод создания сегмента.
+	POST(/segment)
+
+### Метод удаления сегмента.
+	DELETE(/segment/:slug)
+
+### Метод добавления пользователя в сегмент.
+    PUT (/user/:uid/segments)
+
+### Метод удаления сегментов у пользователя.
+	
+
+### Метод получения активных сегментов пользователя. Принимает на вход id пользователя.
+	GET(/user/:uid/segments)
