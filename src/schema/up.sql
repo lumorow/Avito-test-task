@@ -14,5 +14,3 @@ CREATE TABLE IF NOT EXISTS user_segment_relationship (
     segment_id INTEGER REFERENCES segments(id),
     UNIQUE (user_id, segment_id)
 );
-
-SELECT s.name FROM user_segment_relationship as usr JOIN segments as s ON s.id = usr.segment_id

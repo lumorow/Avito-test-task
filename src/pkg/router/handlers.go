@@ -104,7 +104,7 @@ func (r *Router) AddUserSegmentsHandler(c *gin.Context) {
 	err = r.Db.CreateSegmentsUserRelation(userID, segments.SegmentsName)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add segments to user"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprint(err)})
 		return
 	}
 
