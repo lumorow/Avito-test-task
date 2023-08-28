@@ -1,8 +1,6 @@
 package postgres
 
 import (
-	"database/sql"
-	"errors"
 	"fmt"
 )
 
@@ -16,10 +14,7 @@ func (db *Repo) CreateSegmentsUserRelation(userUID int, segments []string) error
 
 	for _, segment := range segments {
 		segmentId, _ := db.GetIdSegment(segment)
-		id, err := db.CreateSegmentUserRelation(userID, segmentId)
-		if id > 0 {
-			return errors.New(fmt.Sprintf("segment: '%s' is already owned by the user with uid: %d", segment, userUID))
-		}
+		err := db.CreateSegmentUserRelation(userID, segmentId)
 		if err != nil {
 			return err
 		}
@@ -27,23 +22,15 @@ func (db *Repo) CreateSegmentsUserRelation(userUID int, segments []string) error
 	return nil
 }
 
-func (db *Repo) CreateSegmentUserRelation(userUID, segmentID int) (int, error) {
-	// Проверка на существование сегмента у пользователя
-	id, err := db.CheckSegmentUserRelation(userUID, segmentID)
-	if id > 0 {
-		return id, errors.New("segment already exist")
-	}
-	if err != nil {
-		return 0, err
-	}
+func (db *Repo) CreateSegmentUserRelation(userUID, segmentID int) error {
 
 	createSegmentUserRelation := fmt.Sprintf("INSERT INTO %s (user_id, segment_id) values ($1, $2)", "user_segment_relationship")
-	_, err = db.Db.Query(createSegmentUserRelation, userUID, segmentID)
+	_, err := db.Db.Query(createSegmentUserRelation, userUID, segmentID)
 	if err != nil {
-		return 0, err
+		return err
 	}
 
-	return 0, nil
+	return nil
 }
 
 func (db *Repo) DeleteSegmentsUserRelation(userUID int, segments []string) error {
@@ -92,18 +79,20 @@ func (db *Repo) GetUserSegments(userUID int) ([]string, error) {
 	return segments, nil
 }
 
-func (db *Repo) CheckSegmentUserRelation(userUID, segmentID int) (int, error) {
-	checkSegmentUserRelation := fmt.Sprintf("SELECT usr.id FROM %s as usr JOIN segments as s ON s.id = usr.segment_id JOIN users as u ON u.id = usr.user_id WHERE u.id = $1 AND s.id = $2", "user_segment_relationship")
+func (db *Repo) CheckSegmentUserRelation(userUID, segmentID int) (bool, error) {
+	checkSegmentUserRelation := `
+		SELECT 1
+		FROM user_segment_relationship usr
+		JOIN segments s ON s.id = usr.segment_id
+		JOIN users u ON u.id = usr.user_id
+		WHERE u.uid = $1 AND s.id = $2
+		LIMIT 1
+	`
 
-	check := 0
-	err := db.Db.QueryRow(checkSegmentUserRelation, userUID, segmentID).Scan(&check)
-	//defer rows.Close()
-
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return 0, errors.New("userSegment not found")
-		}
-		return 0, err
+	var exists bool
+	err := db.Db.QueryRow(checkSegmentUserRelation, userUID, segmentID).Scan(&exists)
+	if exists == true {
+		return exists, nil
 	}
-	return check, nil
+	return exists, err
 }

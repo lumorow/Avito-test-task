@@ -14,3 +14,10 @@ CREATE TABLE IF NOT EXISTS user_segment_relationship (
     segment_id INTEGER REFERENCES segments(id),
     UNIQUE (user_id, segment_id)
 );
+
+SELECT 1
+FROM user_segment_relationship usr
+         JOIN segments s ON s.id = usr.segment_id
+         JOIN users u ON u.id = usr.user_id
+WHERE u.uid = 2000 AND s.id = 2
+LIMIT 1;

@@ -84,18 +84,25 @@ func (r *Router) AddUserSegmentsHandler(c *gin.Context) {
 	}
 
 	// проверка, что uid у пользователя (число)
-	userID, err := strconv.Atoi(UID)
+	userUID, err := strconv.Atoi(UID)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
 		return
 	}
 
-	// проверка, что сегмент существует
+	// проверка, что сегмент существует и что его уже нет у пользователя
+	userID, err := r.Db.GetUserId(userUID)
 	for _, segmentName := range segments.SegmentsName {
-		if _, err = r.Db.GetIdSegment(segmentName); err != nil {
+		segmentID, err := r.Db.GetIdSegment(segmentName)
+		if err != nil {
 			log.Error(err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Segment: %s not found", segmentName)})
+			return
+		}
+		check, _ := r.Db.CheckSegmentUserRelation(userID, segmentID)
+		if check == true {
+			c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("segment: '%s' is already owned by the user with uid: %d", segmentName, userUID)})
 			return
 		}
 	}

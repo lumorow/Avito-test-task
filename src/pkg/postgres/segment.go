@@ -23,7 +23,7 @@ func (db *Repo) CreateSegment(segmentName string) (int, error) {
 			return 0, err
 		}
 	} else {
-		return 0, errors.New("Failed to create segment")
+		return 0, errors.New("failed to create segment")
 	}
 
 	return segmentID, nil
@@ -46,7 +46,7 @@ func (db *Repo) DeleteSegment(segmentName string) (int, error) {
 			return 0, err
 		}
 	} else {
-		return 0, errors.New("Failed to delete segment")
+		return 0, errors.New("failed to delete segment")
 	}
 
 	return segmentID, nil
