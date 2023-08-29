@@ -32,7 +32,7 @@ func (r *Router) CreateSegmentHandler(c *gin.Context) {
 	segmentId, err := r.Db.CreateSegment(SegmentName)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create segment"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to create segment"})
 		return
 	}
 
@@ -46,7 +46,7 @@ func (r *Router) DeleteSegmentHandler(c *gin.Context) {
 	err := r.Db.DeleteSegment(slug)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete segment"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to delete segment"})
 		return
 	}
 
@@ -67,7 +67,7 @@ func (r *Router) DeleteUserHandler(c *gin.Context) {
 	err = r.Db.DeleteUser(userID)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete user"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to delete user"})
 		return
 	}
 
@@ -110,7 +110,7 @@ func (r *Router) AddUserSegmentsHandler(c *gin.Context) {
 	err = r.Db.CreateSegmentsUserRelation(userUID, segments.SegmentsName)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprint(err)})
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprint(err)})
 		return
 	}
 
@@ -152,7 +152,7 @@ func (r *Router) DeleteUserSegmentsHandler(c *gin.Context) {
 	err = r.Db.DeleteSegmentsUserRelation(userID, segments.SegmentsName)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete segments to user"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to delete segments to user"})
 		return
 	}
 
@@ -173,7 +173,7 @@ func (r *Router) GetUserSegmentsHandler(c *gin.Context) {
 	id, err := r.Db.GetUserId(userID)
 	if id == 0 || err != nil {
 		log.Error(err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "User not found"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User not found"})
 		return
 	}
 
@@ -181,7 +181,7 @@ func (r *Router) GetUserSegmentsHandler(c *gin.Context) {
 
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete segments to user"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to delete segments to user"})
 		return
 	}
 	response := models.UserSegmentsResponse{
