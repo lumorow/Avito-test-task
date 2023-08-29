@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"fmt"
+	log "github.com/sirupsen/logrus"
 )
 
 func (db *Repo) CreateSegmentsUserRelation(userUID int, segments []string) error {
@@ -63,7 +64,6 @@ func (db *Repo) GetUserSegments(userUID int) ([]string, error) {
 	deleteSegmentUserRelation := fmt.Sprintf("SELECT s.name FROM %s as usr JOIN segments as s ON s.id = usr.segment_id WHERE usr.user_id = $1", "user_segment_relationship")
 
 	rows, err := db.Db.Query(deleteSegmentUserRelation, userUID)
-	defer rows.Close()
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +92,10 @@ func (db *Repo) CheckSegmentUserRelation(userUID, segmentID int) (bool, error) {
 	var exists bool
 	err := db.Db.QueryRow(checkSegmentUserRelation, userUID, segmentID).Scan(&exists)
 	if exists == true {
+		fmt.Println(userUID, segmentID)
 		return exists, nil
 	}
+	fmt.Println(userUID, segmentID)
+	log.Println("TUTUTUTU2")
 	return exists, err
 }

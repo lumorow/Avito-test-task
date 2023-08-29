@@ -29,27 +29,30 @@ func (db *Repo) CreateUser(userUID int) (int, error) {
 	return userID, nil
 }
 
-func (db *Repo) DeleteUser(userUID int) (int, error) {
-	createSegment := fmt.Sprintf("DELETE FROM %s WHERE UID = ($1) RETURNING id", "users")
-	var userID int
+func (db *Repo) DeleteUser(userUID int) error {
+	tx, err := db.Db.Begin()
+	if err != nil {
+		return err
+	}
 
-	row, err := db.Db.Query(createSegment, userUID)
-	defer row.Close()
+	deleteSegmentUserRelation := fmt.Sprintf("DELETE FROM %s AS usr USING users AS u WHERE u.id = usr.user_id AND u.UID = $1", "user_segment_relationship")
+
+	_, err = tx.Exec(deleteSegmentUserRelation, userUID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	createSegment := fmt.Sprintf("DELETE FROM %s WHERE UID = ($1) RETURNING id", "users")
+
+	_, err = tx.Exec(createSegment, userUID)
 
 	if err != nil {
-		return 0, err
+		tx.Rollback()
+		return err
 	}
 
-	if row.Next() {
-		err = row.Scan(&userID)
-		if err != nil {
-			return 0, err
-		}
-	} else {
-		return 0, errors.New("failed to create user")
-	}
-
-	return userID, nil
+	return tx.Commit()
 }
 
 func (db *Repo) GetUserId(userUID int) (int, error) {

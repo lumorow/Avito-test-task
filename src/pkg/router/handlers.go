@@ -43,14 +43,14 @@ func (r *Router) DeleteSegmentHandler(c *gin.Context) {
 	// Получаем название сегмента
 	slug := c.Param("slug")
 
-	deletedID, err := r.Db.DeleteSegment(slug)
+	err := r.Db.DeleteSegment(slug)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete segment"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Segment deleted successfully", "deleted_id": deletedID})
+	c.JSON(http.StatusOK, gin.H{"message": "Segment deleted successfully"})
 }
 
 func (r *Router) DeleteUserHandler(c *gin.Context) {
@@ -64,14 +64,14 @@ func (r *Router) DeleteUserHandler(c *gin.Context) {
 		return
 	}
 
-	deletedID, err := r.Db.DeleteUser(userID)
+	err = r.Db.DeleteUser(userID)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete user"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully", "deleted_id": deletedID})
+	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
 }
 
 func (r *Router) AddUserSegmentsHandler(c *gin.Context) {
@@ -92,7 +92,6 @@ func (r *Router) AddUserSegmentsHandler(c *gin.Context) {
 	}
 
 	// проверка, что сегмент существует и что его уже нет у пользователя
-	userID, err := r.Db.GetUserId(userUID)
 	for _, segmentName := range segments.SegmentsName {
 		segmentID, err := r.Db.GetIdSegment(segmentName)
 		if err != nil {
@@ -100,7 +99,7 @@ func (r *Router) AddUserSegmentsHandler(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Segment: %s not found", segmentName)})
 			return
 		}
-		check, _ := r.Db.CheckSegmentUserRelation(userID, segmentID)
+		check, _ := r.Db.CheckSegmentUserRelation(userUID, segmentID)
 		if check == true {
 			c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("segment: '%s' is already owned by the user with uid: %d", segmentName, userUID)})
 			return
@@ -108,7 +107,7 @@ func (r *Router) AddUserSegmentsHandler(c *gin.Context) {
 	}
 
 	// добавление сегментов пользователю
-	err = r.Db.CreateSegmentsUserRelation(userID, segments.SegmentsName)
+	err = r.Db.CreateSegmentsUserRelation(userUID, segments.SegmentsName)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprint(err)})
@@ -116,7 +115,7 @@ func (r *Router) AddUserSegmentsHandler(c *gin.Context) {
 	}
 
 	response := models.UserSegmentsResponse{
-		UserID:   userID,
+		UserID:   userUID,
 		Segments: segments.SegmentsName,
 	}
 

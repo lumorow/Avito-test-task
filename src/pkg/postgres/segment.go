@@ -11,7 +11,6 @@ func (db *Repo) CreateSegment(segmentName string) (int, error) {
 	var segmentID int
 
 	row, err := db.Db.Query(createSegment, segmentName)
-	defer row.Close()
 
 	if err != nil {
 		return 0, err
@@ -29,27 +28,29 @@ func (db *Repo) CreateSegment(segmentName string) (int, error) {
 	return segmentID, nil
 }
 
-func (db *Repo) DeleteSegment(segmentName string) (int, error) {
-	deleteSegment := fmt.Sprintf("DELETE FROM %s WHERE name = $1 RETURNING id", "segments")
-	var segmentID int
+func (db *Repo) DeleteSegment(segmentName string) error {
+	tx, err := db.Db.Begin()
+	if err != nil {
+		return err
+	}
+	deleteSegmentUserRelation := fmt.Sprintf("DELETE FROM %s AS usr USING segments AS s WHERE s.id = usr.segment_id AND s.name = $1", "user_segment_relationship")
 
-	row, err := db.Db.Query(deleteSegment, segmentName)
-	defer row.Close()
+	_, err = tx.Exec(deleteSegmentUserRelation, segmentName)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	deleteSegment := fmt.Sprintf("DELETE FROM %s WHERE name = $1", "segments")
+
+	_, err = tx.Exec(deleteSegment, segmentName)
 
 	if err != nil {
-		return 0, err
+		tx.Rollback()
+		return err
 	}
 
-	if row.Next() {
-		err = row.Scan(&segmentID)
-		if err != nil {
-			return 0, err
-		}
-	} else {
-		return 0, errors.New("failed to delete segment")
-	}
-
-	return segmentID, nil
+	return tx.Commit()
 }
 
 func (db *Repo) GetIdSegment(segmentName string) (int, error) {
