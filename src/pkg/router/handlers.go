@@ -10,10 +10,11 @@ import (
 	"strconv"
 )
 
+// Создание сегмента
+
 func (r *Router) CreateSegmentHandler(c *gin.Context) {
 	segment := &models.Segment{}
 
-	// Перекладываем в структуру
 	if err := c.ShouldBindJSON(&segment); err != nil {
 		log.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
@@ -39,8 +40,9 @@ func (r *Router) CreateSegmentHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Segment created successfully", fmt.Sprintf("segment id: %d", segmentId): segment})
 }
 
+// Удаление сегмента
+
 func (r *Router) DeleteSegmentHandler(c *gin.Context) {
-	// Получаем название сегмента
 	slug := c.Param("slug")
 
 	err := r.Db.DeleteSegment(slug)
@@ -53,10 +55,12 @@ func (r *Router) DeleteSegmentHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Segment deleted successfully"})
 }
 
+// Удаление пользователя
+
 func (r *Router) DeleteUserHandler(c *gin.Context) {
 	UID := c.Param("uid")
 
-	// проверка, что uid у пользователя (число)
+	// проверка, что uid у пользователя является числом
 	userID, err := strconv.Atoi(UID)
 	if err != nil {
 		log.Error(err)
@@ -74,6 +78,8 @@ func (r *Router) DeleteUserHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
 }
 
+// Добавляем сегменты пользователю
+
 func (r *Router) AddUserSegmentsHandler(c *gin.Context) {
 	UID := c.Param("uid")
 	segments := &models.Segments{}
@@ -83,7 +89,7 @@ func (r *Router) AddUserSegmentsHandler(c *gin.Context) {
 		return
 	}
 
-	// проверка, что uid у пользователя (число)
+	// проверка, что uid у пользователя является числом
 	userUID, err := strconv.Atoi(UID)
 	if err != nil {
 		log.Error(err)
@@ -122,6 +128,8 @@ func (r *Router) AddUserSegmentsHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+// Удаление сегментов у пользователя
+
 func (r *Router) DeleteUserSegmentsHandler(c *gin.Context) {
 	UID := c.Param("uid")
 	segments := &models.Segments{}
@@ -131,7 +139,7 @@ func (r *Router) DeleteUserSegmentsHandler(c *gin.Context) {
 		return
 	}
 
-	// проверка, что uid у пользователя (число)
+	// проверка, что uid у пользователя является числом
 	userID, err := strconv.Atoi(UID)
 	if err != nil {
 		log.Error(err)
@@ -159,10 +167,12 @@ func (r *Router) DeleteUserSegmentsHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Success to delete segments to user"})
 }
 
+// Получение сегментов, в которые входит пользователь
+
 func (r *Router) GetUserSegmentsHandler(c *gin.Context) {
 	UID := c.Param("uid")
 
-	// проверка, что uid у пользователя (число)
+	// проверка, что uid у пользователя является числом
 	userID, err := strconv.Atoi(UID)
 	if err != nil {
 		log.Error(err)
@@ -170,6 +180,7 @@ func (r *Router) GetUserSegmentsHandler(c *gin.Context) {
 		return
 	}
 
+	// получаем id пользователя
 	id, err := r.Db.GetUserId(userID)
 	if id == 0 || err != nil {
 		log.Error(err)
