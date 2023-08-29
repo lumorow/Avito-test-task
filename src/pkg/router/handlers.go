@@ -91,7 +91,7 @@ func (r *Router) AddUserSegmentsHandler(c *gin.Context) {
 		return
 	}
 
-	// проверка, что сегмент существует и что его уже нет у пользователя
+	// проверка, что сегмент существует и что его еще нет у пользователя
 	for _, segmentName := range segments.SegmentsName {
 		segmentID, err := r.Db.GetIdSegment(segmentName)
 		if err != nil {
@@ -119,7 +119,7 @@ func (r *Router) AddUserSegmentsHandler(c *gin.Context) {
 		Segments: segments.SegmentsName,
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Segments added successfully", "response": response})
+	c.JSON(http.StatusOK, response)
 }
 
 func (r *Router) DeleteUserSegmentsHandler(c *gin.Context) {

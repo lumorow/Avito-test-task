@@ -2,7 +2,6 @@ package postgres
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
 )
 
 func (db *Repo) CreateSegmentsUserRelation(userUID int, segments []string) error {
@@ -95,7 +94,5 @@ func (db *Repo) CheckSegmentUserRelation(userUID, segmentID int) (bool, error) {
 		fmt.Println(userUID, segmentID)
 		return exists, nil
 	}
-	fmt.Println(userUID, segmentID)
-	log.Println("TUTUTUTU2")
 	return exists, err
 }
