@@ -1,6 +1,7 @@
 package models
 
 type Segment struct {
+	Id          int
 	SegmentName string `json:"segment_name"`
 }
 

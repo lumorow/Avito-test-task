@@ -37,7 +37,12 @@ func (r *Router) CreateSegmentHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Segment created successfully", fmt.Sprintf("segment id: %d", segmentId): segment})
+	response := models.Segment{
+		Id:          segmentId,
+		SegmentName: SegmentName,
+	}
+
+	c.JSON(http.StatusOK, response)
 }
 
 // Удаление сегмента

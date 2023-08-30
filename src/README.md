@@ -30,17 +30,78 @@
 >DELETE("/user/:uid")
 
 ## Примеры запросов/ответов
--   Пример №1
+-   Пример №1. Добавление сегмента
     - Запрос
-    > POST "http://localhost:8080/segment"  
-    Body: {  
-         segment_name: "AVITO_SUPER_SALE_50",  
-    }
-    - Ответ
+*       POST "http://localhost:8080/segment"  
+        Body: {  
+            segment_name: "AVITO_SUPER_SALE_50",  
+        }
 
-    > {  
-        "message": "Segment created successfully",  
-        "segment id: 1": {  
-            "segment_name": "AVITO_WORK"  
-        }  
-    }  
+    - Ответ 
+*       "segment id: 1": {  
+            "segment_name": "AVITO_SUPER_SALE_50"  
+        }
+- Пример №2. Добавление сегмента
+    - Запрос
+*       POST "http://localhost:8080/segment"  
+        Body: {  
+            segment_name: "AVITO_WOW",  
+        }
+
+    - Ответ
+*       "segment id: 2": {  
+            "segment_name": "AVITO_WOW"  
+        }
+- Пример №3. Добавление пользователя в сегменты
+    - Запрос
+*       PUT "http://localhost:8080/user/2000/segments"
+        Body: {
+            "segments_name": ["AVITO_WOW","AVITO_SUPER_SALE_50"]
+        }
+
+    - Ответ
+*       {
+            "user_id": 2000,
+            "segments": [
+                 "AVITO_WOW",
+                 "AVITO_SUPER_SALE_50"
+            ]
+        }
+- Пример №4. Получение сегментов пользователя
+    - Запрос
+*       GET "http://localhost:8080/user/2001/segments"
+
+    - Ответ
+*       {
+            "user_id": 2000,
+            "segments": [
+                 "AVITO_WOW",
+                 "AVITO_SUPER_SALE_50"
+            ]
+        }
+- Пример №5. Удаление сегмента
+    - Запрос
+*       DELETE "http://localhost:8080/segment/AVITO_SUPER_SALE_50"
+
+    - Ответ
+*       {
+            "message": "Segment deleted successfully"
+        }
+- Пример №6. Удаление сегментов у пользователя
+    - Запрос
+*       DELETE "http://localhost:8080/user/2000/segments"
+        {
+            "segments_name": ["AVITO_WOW"]
+        }
+    - Ответ
+*       {
+            "message": "Success to delete segments to user"
+        }
+- Пример №7. Удаление пользователя
+    - Запрос
+*       DELETE "http://localhost:8080/user/2000"
+
+    - Ответ
+*       {
+            "message": "User deleted successfully"
+        }
