@@ -1,8 +1,11 @@
 package router
 
 import (
+	_ "Avito-test-task/docs"
 	"Avito-test-task/pkg/postgres"
 	"github.com/gin-gonic/gin"
+	"github.com/swaggo/files"       // swagger embed files
+	"github.com/swaggo/gin-swagger" // gin-swagger middleware
 )
 
 type Router struct {
@@ -35,4 +38,7 @@ func (r *Router) InitRoutes() {
 
 	// Метод удаления пользователя
 	r.Rtr.DELETE("/user/:uid", r.DeleteUserHandler)
+
+	// Swagger
+	r.Rtr.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }

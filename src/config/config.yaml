@@ -1,6 +1,6 @@
 #POSTGRESQL
 PSQL_CONF:
-  HOST: localhost
+  HOST: db
   PORT: 5432
   USER: postgres
   PASSWORD: postgres

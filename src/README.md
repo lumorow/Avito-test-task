@@ -1,13 +1,19 @@
 # Описание и пояснения
 ## Инструкция по запуску
 *Поднятие и развертывание dev-среды в docker*
->Make run
+>Make go_build
 
 *Запуск тестов*
->Make tests
+>Make go_run
 
-*Удаление среды*
->Make сlean
+*Удаление контейнеров*
+>Make go_сlean
+
+*Создание swagger спецификации*
+>Make go_swagger
+
+## Swagger HTML:
+>http://localhost:8080/swagger/index.html
 
 ## Список реализованных методов:
 

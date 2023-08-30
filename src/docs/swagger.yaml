@@ -1,0 +1,190 @@
+basePath: /
+definitions:
+  models.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  models.SegmentRequest:
+    properties:
+      segment_name:
+        type: string
+    type: object
+  models.SegmentResponse:
+    properties:
+      id:
+        type: integer
+      segment_name:
+        type: string
+    type: object
+  models.Segments:
+    properties:
+      segments_name:
+        items:
+          type: string
+        type: array
+    type: object
+  models.SuccessResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  models.UserSegmentsResponse:
+    properties:
+      segments:
+        items:
+          type: string
+        type: array
+      user_id:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  title: Avito-test-task
+  version: "1.0"
+paths:
+  /segment:
+    post:
+      consumes:
+      - application/json
+      description: Создание нового сегмента
+      parameters:
+      - description: Данные сегмента
+        in: body
+        name: segment
+        required: true
+        schema:
+          $ref: '#/definitions/models.SegmentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SegmentResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      tags:
+      - Segment
+  /segment/{slug}:
+    delete:
+      description: Удаление существующего сегмента
+      parameters:
+      - description: Slug сегмента
+        in: path
+        name: slug
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      tags:
+      - Segment
+  /user/{uid}:
+    delete:
+      description: Удаление пользователя
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: uid
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      tags:
+      - User
+  /user/{uid}/segments:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление сегментов у пользователя
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: uid
+        required: true
+        type: integer
+      - description: Данные сегментов
+        in: body
+        name: segments
+        required: true
+        schema:
+          $ref: '#/definitions/models.Segments'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      tags:
+      - User
+    get:
+      description: Получение списка сегментов, в которые входит пользователь
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: uid
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserSegmentsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      tags:
+      - User
+    post:
+      consumes:
+      - application/json
+      description: Добавление сегментов пользователю
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: uid
+        required: true
+        type: integer
+      - description: Данные сегментов
+        in: body
+        name: segments
+        required: true
+        schema:
+          $ref: '#/definitions/models.Segments'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserSegmentsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      tags:
+      - User
+swagger: "2.0"

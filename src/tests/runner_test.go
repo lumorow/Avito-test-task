@@ -14,7 +14,7 @@ import (
 func Test_POST_AddSegment_StatusCodeShouldEqual200(t *testing.T) {
 	client := resty.New()
 
-	segment := models.Segment{
+	segment := models.SegmentRequest{
 		SegmentName: "AVITO_SUPER_SALE_50",
 	}
 	resp, _ := client.R().SetBody(&segment).Post("http://localhost:8080/segment")
@@ -22,7 +22,7 @@ func Test_POST_AddSegment_StatusCodeShouldEqual200(t *testing.T) {
 		t.Errorf("Unexpected status code, expected %d, got %d instead", 200, resp.StatusCode())
 	}
 
-	segment = models.Segment{
+	segment = models.SegmentRequest{
 		SegmentName: "AVITO_WOW",
 	}
 	resp, _ = client.R().SetBody(&segment).Post("http://localhost:8080/segment")
@@ -30,7 +30,7 @@ func Test_POST_AddSegment_StatusCodeShouldEqual200(t *testing.T) {
 		t.Errorf("Unexpected status code, expected %d, got %d instead", 200, resp.StatusCode())
 	}
 
-	segment = models.Segment{
+	segment = models.SegmentRequest{
 		SegmentName: "AVITO_CLASSIC_15",
 	}
 	resp, _ = client.R().SetBody(&segment).Post("http://localhost:8080/segment")
@@ -38,7 +38,7 @@ func Test_POST_AddSegment_StatusCodeShouldEqual200(t *testing.T) {
 		t.Errorf("Unexpected status code, expected %d, got %d instead", 200, resp.StatusCode())
 	}
 
-	segment = models.Segment{
+	segment = models.SegmentRequest{
 		SegmentName: "AVITO_AWESOME_90",
 	}
 	resp, _ = client.R().SetBody(&segment).Post("http://localhost:8080/segment")
@@ -46,7 +46,7 @@ func Test_POST_AddSegment_StatusCodeShouldEqual200(t *testing.T) {
 		t.Errorf("Unexpected status code, expected %d, got %d instead", 200, resp.StatusCode())
 	}
 
-	segment = models.Segment{
+	segment = models.SegmentRequest{
 		SegmentName: "AVITO_HOME",
 	}
 	resp, _ = client.R().SetBody(&segment).Post("http://localhost:8080/segment")
@@ -54,7 +54,7 @@ func Test_POST_AddSegment_StatusCodeShouldEqual200(t *testing.T) {
 		t.Errorf("Unexpected status code, expected %d, got %d instead", 200, resp.StatusCode())
 	}
 
-	segment = models.Segment{
+	segment = models.SegmentRequest{
 		SegmentName: "AVITO_WORK",
 	}
 	resp, _ = client.R().SetBody(&segment).Post("http://localhost:8080/segment")
@@ -71,7 +71,7 @@ func Test_POST_AddSegment_StatusCodeShouldEqual200(t *testing.T) {
 func Test_POST_AddSegment_StatusCodeShouldEqual400(t *testing.T) {
 	client := resty.New()
 
-	segment := models.Segment{
+	segment := models.SegmentRequest{
 		SegmentName: "AVITO_SUPER_SALE_50",
 	}
 	resp, _ := client.R().SetBody(&segment).Post("http://localhost:8080/segment")
@@ -79,7 +79,7 @@ func Test_POST_AddSegment_StatusCodeShouldEqual400(t *testing.T) {
 		t.Errorf("Unexpected status code, expected %d, got %d instead", 400, resp.StatusCode())
 	}
 
-	segment = models.Segment{
+	segment = models.SegmentRequest{
 		SegmentName: "AVITO_WOW",
 	}
 	resp, _ = client.R().SetBody(&segment).Post("http://localhost:8080/segment")
@@ -87,7 +87,7 @@ func Test_POST_AddSegment_StatusCodeShouldEqual400(t *testing.T) {
 		t.Errorf("Unexpected status code, expected %d, got %d instead", 400, resp.StatusCode())
 	}
 
-	segment = models.Segment{
+	segment = models.SegmentRequest{
 		SegmentName: "AVITO_CLASSIC_15",
 	}
 	resp, _ = client.R().SetBody(&segment).Post("http://localhost:8080/segment")
@@ -95,7 +95,7 @@ func Test_POST_AddSegment_StatusCodeShouldEqual400(t *testing.T) {
 		t.Errorf("Unexpected status code, expected %d, got %d instead", 400, resp.StatusCode())
 	}
 
-	segment = models.Segment{
+	segment = models.SegmentRequest{
 		SegmentName: "AVITO_AWESOME_90",
 	}
 	resp, _ = client.R().SetBody(&segment).Post("http://localhost:8080/segment")
@@ -103,7 +103,7 @@ func Test_POST_AddSegment_StatusCodeShouldEqual400(t *testing.T) {
 		t.Errorf("Unexpected status code, expected %d, got %d instead", 400, resp.StatusCode())
 	}
 
-	segment = models.Segment{
+	segment = models.SegmentRequest{
 		SegmentName: "AVITO_HOME",
 	}
 	resp, _ = client.R().SetBody(&segment).Post("http://localhost:8080/segment")
@@ -111,7 +111,7 @@ func Test_POST_AddSegment_StatusCodeShouldEqual400(t *testing.T) {
 		t.Errorf("Unexpected status code, expected %d, got %d instead", 400, resp.StatusCode())
 	}
 
-	segment = models.Segment{
+	segment = models.SegmentRequest{
 		SegmentName: "AVITO_WORK",
 	}
 	resp, _ = client.R().SetBody(&segment).Post("http://localhost:8080/segment")
