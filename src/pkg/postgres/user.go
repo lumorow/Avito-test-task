@@ -7,10 +7,10 @@ import (
 )
 
 func (db *Repo) CreateUser(userUID int) (int, error) {
-	createSegment := fmt.Sprintf("INSERT INTO %s (id, UID) values ($1, $2) RETURNING id", "users")
+	createSegment := fmt.Sprintf("INSERT INTO %s (UID) values ($1) RETURNING id", "users")
 	var userID int
 
-	row, err := db.Db.Query(createSegment, "(SELECT max(id)+1 FROM users)", userUID)
+	row, err := db.Db.Query(createSegment, userUID)
 	defer row.Close()
 
 	if err != nil {
