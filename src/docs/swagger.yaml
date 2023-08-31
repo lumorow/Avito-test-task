@@ -109,6 +109,33 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       tags:
       - User
+  /user/{uid}/{time}:
+    get:
+      description: Получение отчета по пользователю за период
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: uid
+        required: true
+        type: integer
+      - description: Период пользователя
+        in: path
+        name: time
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      tags:
+      - User
   /user/{uid}/segments:
     delete:
       consumes:
@@ -158,7 +185,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       tags:
       - User
-    post:
+    put:
       consumes:
       - application/json
       description: Добавление сегментов пользователю

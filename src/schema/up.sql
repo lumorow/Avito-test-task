@@ -1,3 +1,5 @@
+ALTER ROLE postgres SUPERUSER;
+
 CREATE TABLE IF NOT EXISTS segments (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL UNIQUE
@@ -47,3 +49,5 @@ CREATE OR REPLACE TRIGGER user_segment_audit
     AFTER INSERT OR DELETE ON user_segment_relationship
     FOR EACH ROW EXECUTE FUNCTION process_user_segment_audit();
 
+
+-- \copy (SELECT * FROM user_segment_audit usa WHERE usa.user_UID = 2000 AND usa.stamp < '2023-09-01') TO '/home/luca/projects/Avito-test-task/src/2000.csv' WITH CSV DELIMITER ',' HEADER

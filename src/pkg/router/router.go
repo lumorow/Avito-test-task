@@ -41,4 +41,7 @@ func (r *Router) InitRoutes() {
 
 	// Swagger
 	r.Rtr.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	// Получение отчета по пользователю CSV
+	r.Rtr.GET("/user/:uid/:time", r.GetUserReportHandler)
 }

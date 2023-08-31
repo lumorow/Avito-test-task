@@ -3,10 +3,13 @@ package router
 import (
 	"Avito-test-task/models"
 	"Avito-test-task/parser"
+	"bytes"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
+	"html/template"
 	"net/http"
+	"os"
 	"strconv"
 )
 
@@ -244,4 +247,71 @@ func (r *Router) GetUserSegmentsHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response)
+}
+
+// GetUserReportHandler @Summary Get user report
+// @Description Получение отчета по пользователю за период
+// @Tags User
+// @Param uid path int true "ID пользователя"
+// @Param time path string true "Период пользователя"
+// @Success 200
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /user/{uid}/{time} [get]
+func (r *Router) GetUserReportHandler(c *gin.Context) {
+	UID := c.Param("uid")
+	inputTime := c.Param("time")
+
+	userID, err := strconv.Atoi(UID)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Invalid user ID"})
+		return
+	}
+
+	t, err := parser.ParseInputTime(inputTime)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: fmt.Sprintf("Incorrect time: %s, correct notation: yyyy-mm", inputTime)})
+		return
+	}
+
+	err = r.Db.GetUserReport(userID, t)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to get user segments for period"})
+		return
+	}
+
+	fileName := fmt.Sprintf("/tmp/%v.csv", UID)
+
+	file, err := os.Open(fileName)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to open user report"})
+		return
+	}
+	defer file.Close()
+
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "Internal Server Error"})
+		return
+	}
+
+	var buf bytes.Buffer
+
+	tmpl := template.Must(template.ParseFiles(fileName))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "Internal Server Error"})
+		return
+	}
+
+	err = tmpl.Execute(&buf, tmpl)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "Internal Server Error"})
+		return
+	}
+
+	c.JSON(http.StatusOK, buf)
 }
