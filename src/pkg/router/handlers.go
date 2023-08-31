@@ -109,7 +109,7 @@ func (r *Router) DeleteUserHandler(c *gin.Context) {
 // @Param segments body models.Segments true "Данные сегментов"
 // @Success 200 {object} models.UserSegmentsResponse
 // @Failure 400 {object} models.ErrorResponse
-// @Router /user/{uid}/segments [post]
+// @Router /user/{uid}/segments [put]
 func (r *Router) AddUserSegmentsHandler(c *gin.Context) {
 	UID := c.Param("uid")
 	segments := &models.Segments{}
@@ -146,7 +146,7 @@ func (r *Router) AddUserSegmentsHandler(c *gin.Context) {
 	err = r.Db.CreateSegmentsUserRelation(userUID, segments.SegmentsName)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: fmt.Sprint(err)})
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Failed to insert segments to user"})
 		return
 	}
 

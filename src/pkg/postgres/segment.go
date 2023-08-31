@@ -7,10 +7,10 @@ import (
 )
 
 func (db *Repo) CreateSegment(segmentName string) (int, error) {
-	createSegment := fmt.Sprintf("INSERT INTO %s (name) values ($1) RETURNING id", "segments")
+	createSegment := fmt.Sprintf("INSERT INTO %s (id, name) values ($1, $2) RETURNING id", "segments")
 	var segmentID int
 
-	row, err := db.Db.Query(createSegment, segmentName)
+	row, err := db.Db.Query(createSegment, "(SELECT max(id)+1 FROM users)", segmentName)
 
 	if err != nil {
 		return 0, err

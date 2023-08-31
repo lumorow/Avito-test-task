@@ -24,8 +24,8 @@ func (db *Repo) CreateSegmentsUserRelation(userUID int, segments []string) error
 
 func (db *Repo) CreateSegmentUserRelation(userUID, segmentID int) error {
 
-	createSegmentUserRelation := fmt.Sprintf("INSERT INTO %s (user_id, segment_id) values ($1, $2)", "user_segment_relationship")
-	_, err := db.Db.Query(createSegmentUserRelation, userUID, segmentID)
+	createSegmentUserRelation := fmt.Sprintf("INSERT INTO %s (id, user_id, segment_id) values ($1, $2, $3)", "user_segment_relationship")
+	_, err := db.Db.Query(createSegmentUserRelation, "(SELECT max(id)+1 FROM user_segment_relationship)", userUID, segmentID)
 	if err != nil {
 		return err
 	}
